@@ -1,5 +1,5 @@
-*.jsx linguist-language=React
+*.jsx linguist-detectable=true
 *.css linguist-detectable=true
-*.js linguist-detectable=true
+*.js  linguist-detectable=true linguist-language=reactjs
 
 
