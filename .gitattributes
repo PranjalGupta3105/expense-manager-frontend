@@ -1,4 +1,4 @@
-*.jsx linguist-detectable=true
+*.jsx linguist-detectable=true linguist-language=React
 *.css linguist-detectable=true
 *.js linguist-detectable=true
 
