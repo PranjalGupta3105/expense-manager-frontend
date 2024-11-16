@@ -16,7 +16,7 @@ const MonthWiseExpense = (props) => {
     <div className={className}>
       <p>
         Total Spends in {month_type} &quot;{getMonthNameFromIndex(month_no)}&quot; month&ensp;:&ensp;&ensp;
-        {Math.round(data ? data.total_amount_in_mon : 0)}
+        {Math.round(data ? data.total_amount_in_mon ? Math.round(data.total_amount_in_mon) : 0 : 0)}
       </p>
     </div>
   );
