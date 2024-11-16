@@ -78,7 +78,7 @@ const Navbar = () => {
 
               {/* White box with total spends */}
               <div className="hidden sm:flex sm:ml-6 sm:mr-4 bg-white text-black p-4 rounded-md shadow-md max-w-md">
-                <p>Total Spends: {Math.round(data.total_spends) ? (data.total_spends) : 0}</p>
+                <p>Total Spends: {data ? data.total_spends ? Math.round(data.total_spends) : 0 : 0}</p>
               </div>
               {/* MonthWiseExpense components */}
               <MonthWiseExpense
