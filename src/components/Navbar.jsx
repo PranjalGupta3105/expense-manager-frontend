@@ -34,6 +34,18 @@ const Navbar = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
+  const clearUserToken = () => {
+    
+  };
+
+  // useEffect(() => {
+  //   // Retrieve token from localStorage on component mount
+  //   const savedToken = localStorage.getItem('token');
+  //   if (savedToken) {
+  //     setToken(savedToken);  // If token exists, set it in state
+  //   }
+  // }, []);
+
   return (
     <div>
       {/* Overlay for side nav on mobile */}

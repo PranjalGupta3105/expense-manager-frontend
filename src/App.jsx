@@ -1,4 +1,4 @@
-// import React from 'react'
+import { useState } from "react";
 import {
   Route,
   createBrowserRouter,
@@ -15,6 +15,7 @@ import NewExpensePage from "./pages/NewExpensePage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import CardDetails from "./components/CardDetail";
 import ExpenseOverview from "./components/ExpenseOverview";
+import LoginPage from "./pages/LoginPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,6 +28,7 @@ const router = createBrowserRouter(
       <Route path="/analytics" element={<AnalyticsPage />} />
       <Route path="/cards" element={<CardDetails />} />
       <Route path="/expense-overview" element={<ExpenseOverview />} />
+      <Route path="/login" element={<LoginPage />} />
 
       {/* <Route path="*" element={<NotFoundPage />} /> */}
     </Route>
@@ -34,7 +36,22 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  const [token, setToken] = useState(null);
+
+  const handleLoginSuccess = (token) => {
+    // Set token in state and redirect to home
+    setToken(token);
+  };
+
+  return (
+    <div>
+      {!token ? (
+        <LoginPage onLoginSuccess={handleLoginSuccess} />
+      ) : (
+        <RouterProvider router={router}/>
+      )}
+    </div>
+  );
 }
 
 export default App;

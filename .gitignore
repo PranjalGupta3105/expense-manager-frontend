@@ -26,3 +26,6 @@ package-lock.json
 
 # Scripts
 generate_pr_context.sh
+
+# PR diff file
+pr-diff.txt
