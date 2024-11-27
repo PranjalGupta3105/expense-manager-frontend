@@ -2,9 +2,6 @@ import React from "react";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import { useQuery, gql } from "@apollo/client";
-import MonthWiseExpense from "./MonthWiseExpense";
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -20,19 +17,13 @@ const navigation = [
   { name: "Expense Overview", href: "/expense-overview" },
 ];
 
-const GET_TOTAL_SPENDS = gql`
-  query getTotalSpends {
-    total_spends
-  }
-`;
-
 const Navbar = () => {
-  const { loading, error, data } = useQuery(GET_TOTAL_SPENDS);
-
   const [sideNavOpen, setSideNavOpen] = React.useState(false);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  const clearUserToken = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
 
   return (
     <div>
@@ -94,6 +85,11 @@ const Navbar = () => {
                 month_type="previous"
                 month_no={new Date().getMonth()}
               /> */}
+              <div className="bg-white text-black p-3 rounded-md shadow-md hidden sm:flex">
+              <button onClick={clearUserToken} className="text-red-500 hover:text-red-700">
+                Logout
+              </button>
+              </div>
             </div>
           </div>
         </div>
@@ -142,6 +138,11 @@ const Navbar = () => {
                 month_no={new Date().getMonth()}
               />
             </div> */}
+             <div className="bg-white text-black p-3 rounded-md shadow-md flex sm:hidden">
+              <button onClick={clearUserToken} className="text-red-500 hover:text-red-700">
+                Logout
+              </button>
+              </div>
           </div>
         </div>
       </Disclosure>

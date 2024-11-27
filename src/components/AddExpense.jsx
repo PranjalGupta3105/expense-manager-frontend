@@ -82,15 +82,6 @@ const AddExpense = () => {
     e.preventDefault(); // Prevent the default form submission
     try {
 
-      console.log(`Submitting:
-      Amount: ${parseFloat(amount)}
-      Description: ${description}
-      Method ID: ${parseInt(method_id)}
-      Source ID: ${parseInt(source_id)}
-      Date: ${exp_date}
-      Tag: ${tag}
-      Card ID: ${parseInt(card_id) || null}`);
-
       // Execute the GraphQL mutation with the form data
       await createExpense({
         variables: {
