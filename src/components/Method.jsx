@@ -2,7 +2,7 @@
 import Table from "./Table";
 import { useQuery, gql } from "@apollo/client";
 
-let headings = ["S.No.","Method Id", "Name"];
+let headings = ["S.No.","Method Id", "Name", "Action"];
 
 const GET_METHODS = gql`
   query getMethods {

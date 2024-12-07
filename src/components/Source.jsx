@@ -2,7 +2,7 @@
 import Table from "./Table";
 import { useQuery, gql } from "@apollo/client";
 
-const headings = ["S.No.", "Source Id", "Name"];
+const headings = ["S.No.", "Source Id", "Name", "Action"];
 
 const GET_SOURCES = gql`
   query getSources {

@@ -1,4 +1,5 @@
 // import React from "react";
+import { MdEdit, MdDelete } from "react-icons/md";
 
 const TableRow = (props) => {
   // eslint-disable-next-line react/prop-types
@@ -21,6 +22,8 @@ const TableRow = (props) => {
           return <td className="px-6 py-4">{row_data_object[key]}</td>
         })
       }
+      <td className="px-6 py-4"><MdEdit /></td>
+      <td className="px-6 py-4"><MdDelete /></td>
     </tr>
   );
 };

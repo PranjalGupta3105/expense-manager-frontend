@@ -11,9 +11,6 @@ const Login = ({ onLoginSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission
     try {
-      console.log(
-        `Login Successful with phone = ${phone} and password = ${password}`
-      );
       const data = {
         phone,
         password,
@@ -23,7 +20,9 @@ const Login = ({ onLoginSuccess }) => {
           "Content-Type": "application/json",
         },
       });
-      console.log(JSON.stringify(res));
+
+      console.log('\nres\n'+JSON.stringify(res.data))
+
       if (res) {
         if (res.data) {
           if (res.data.token) {
@@ -41,10 +40,22 @@ const Login = ({ onLoginSuccess }) => {
       // Reset form state after submission
       setPhone("");
       setPassword("");
-    } catch (err) {
+    } catch (error) {
+      // console.log('\nres\n'+JSON.stringify(err))
+
+      if (error.response) {
+        // The request was made and the server responded with a status code outside of the 2xx range
+        console.error('Error message:', error.response.data.message);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('No response received:', error.request);
+      } else {
+        // Something else caused an error
+        console.error('Error:', error.message);
+      }
       setPhone("");
       setPassword("");
-      setError(err.message);
+      setError(error.message);
     }
   };
 
@@ -126,17 +137,8 @@ const Login = ({ onLoginSuccess }) => {
               >
                 Sign in
               </button>
-              {/* <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don’t have an account yet?{" "}
-                <a
-                  href="#"
-                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                >
-                  Sign up
-                </a>
-              </p> */}
             </form>
-            {error && <div>Error: {error}</div>}
+            {error && <div>Error: - {JSON.stringify(error.response)}</div>}
           </div>
         </div>
       </div>

@@ -32,14 +32,23 @@ const Navbar = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
+  const clearUserToken = () => {
+    
+  };
+
+  // useEffect(() => {
+  //   // Retrieve token from localStorage on component mount
+  //   const savedToken = localStorage.getItem('token');
+  //   if (savedToken) {
+  //     setToken(savedToken);  // If token exists, set it in state
+  //   }
+  // }, []);
 
   return (
     <div>
       <Disclosure as="nav" className="bg-gray-800">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-          
           <div className="relative flex items-center justify-between h-16">
-           
             {/* Mobile menu button */}
             <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
               <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
@@ -78,7 +87,14 @@ const Navbar = () => {
 
               {/* White box with total spends */}
               <div className="hidden sm:flex sm:ml-6 sm:mr-4 bg-white text-black p-4 rounded-md shadow-md max-w-md">
-                <p>Total Spends: {data ? data.total_spends ? Math.round(data.total_spends) : 0 : 0}</p>
+                <p>
+                  Total Spends:{" "}
+                  {data
+                    ? data.total_spends
+                      ? Math.round(data.total_spends)
+                      : 0
+                    : 0}
+                </p>
               </div>
               {/* MonthWiseExpense components */}
               <MonthWiseExpense
@@ -91,6 +107,18 @@ const Navbar = () => {
                 month_type="previous"
                 month_no={new Date().getMonth()}
               />
+              <button
+                className={classNames(
+                  undefined
+                    ? "bg-gray-900 text-white"
+                    : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                  "rounded-md text-lg px-6 py-4 font-medium flex items-center justify-center"
+                )
+              }
+              onClick={clearUserToken}
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
@@ -117,7 +145,6 @@ const Navbar = () => {
             {/* <AddExpense /> You can remove this from the mobile menu */}
           </div>
         </DisclosurePanel>
-
       </Disclosure>
     </div>
   );

@@ -11,6 +11,7 @@ let headings = [
   "Method",
   "Source",
   "Created By",
+  "Action"
 ];
 
 const GET_EXPENSES = gql`

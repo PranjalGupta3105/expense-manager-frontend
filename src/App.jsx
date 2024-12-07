@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Route,
   createBrowserRouter,
@@ -30,16 +30,7 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  // 
   const [token, setToken] = useState(null);
-
-  useEffect(() => {
-    // Check if there's a token in localStorage when the app loads
-    const savedToken = localStorage.getItem("token");
-    if (savedToken) {
-      setToken(savedToken); // Set the token from localStorage to state
-    }
-  }, []);
 
   const handleLoginSuccess = (token) => {
     // Set token in state and redirect to home
