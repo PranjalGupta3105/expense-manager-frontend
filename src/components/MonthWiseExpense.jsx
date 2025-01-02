@@ -37,7 +37,9 @@ const getMonthNameFromIndex = (mon_index) => {
     "November",
     "December",
   ];
-  return months[mon_index-1]
+  let mindx = mon_index-1
+
+  return months[ mindx >=0 ? mindx : 11]
 }
 
 export default MonthWiseExpense;
