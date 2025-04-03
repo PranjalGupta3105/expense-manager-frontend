@@ -24,7 +24,7 @@ const Calender = () => {
 
   const GET_EXPENSE_DATE_WISE = gql`
     query dateWiseExpense {
-      date_wise_expenses(mon_no: ${selectedMonNo}) {
+      date_wise_expenses(mon_no: ${selectedMonNo.charAt(0)==='0'? selectedMonNo.charAt(1): selectedMonNo}) {
         date
         amount
         total_expenses
