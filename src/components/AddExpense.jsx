@@ -72,7 +72,8 @@ const AddExpense = () => {
   };
 
   return (
-    <div className="w-full max-w-xs">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-xs">
       <form
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         onSubmit={handleSubmit}
@@ -218,6 +219,7 @@ const AddExpense = () => {
           </button>
         </div>
       </form>
+    </div>
     </div>
   );
 };
