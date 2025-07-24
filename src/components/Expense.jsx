@@ -11,6 +11,8 @@ let headings = [
   "Method",
   "Source",
   "Created By",
+  "Is Repayed",
+  "Tag",
 ];
 
 const GET_EXPENSES = gql`
@@ -32,6 +34,8 @@ const GET_EXPENSES = gql`
           last_name
           username
         }
+        is_repayed
+        tag
       }
       count
     }
@@ -52,6 +56,8 @@ const Expense = () => {
       method: row.method.name,
       source: row.source.name,
       first_name: row.user.first_name,
+      is_repayed: row.is_repayed ? "Yes" : "No",
+      tag: row.tag ? row.tag : "N/A",
     };
   });
   expenses = expenses.map((expense, index) => {

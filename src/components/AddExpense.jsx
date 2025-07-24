@@ -8,6 +8,7 @@ const AddExpense = () => {
   const [method_id, setMethod] = useState(0);
   const [source_id, setSource] = useState(0);
   const [exp_date, setDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+  const [tag, setTag] = useState("");
 
   const ADD_EXPENSE_MUTATION = gql`
     mutation addExpense(
@@ -16,6 +17,7 @@ const AddExpense = () => {
       $method_id: Int!
       $source_id: Int!
       $exp_date: String!
+      $tag: String
     ) {
       expense: createExpense(
         amount: $amount
@@ -23,6 +25,7 @@ const AddExpense = () => {
         method_id: $method_id
         source_id: $source_id
         date: $exp_date
+        tag: $tag
       ) {
         id
         amount
@@ -36,6 +39,7 @@ const AddExpense = () => {
           name
         }
         date
+        tag
         created_by
         updated_by
       }
@@ -57,6 +61,7 @@ const AddExpense = () => {
           method_id: parseInt(method_id),
           source_id: parseInt(source_id),
           exp_date,
+          tag,
         },
       });
 
@@ -66,6 +71,7 @@ const AddExpense = () => {
       setMethod(0);
       setSource(0);
       setDate(moment(new Date()).format("YYYY-MM-DD"));
+      setTag("");
     } catch (err) {
       console.error("Error creating user:", err);
     }
@@ -206,6 +212,22 @@ const AddExpense = () => {
             value={exp_date}
             onChange={(e) => setDate(e.target.value)}
             required
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            className="block text-gray-700 text-sm font-bold mb-2"
+            htmlFor="tag"
+          >
+            Tag
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="tag"
+            type="text"
+            placeholder="Tag"
+            value={tag}
+            onChange={(e) => setTag(e.target.value)}
           />
         </div>
 

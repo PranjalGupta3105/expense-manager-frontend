@@ -5,9 +5,12 @@ const TableRow = (props) => {
   let { row_data_object } = props;
 
   let keys = Object.keys(row_data_object)
+  const isRepayed = row_data_object.is_repayed === 1;
 
   return (
-    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+    <tr className={
+      `${isRepayed ? 'bg-green-100 dark:bg-green-800' : 'bg-white dark:bg-gray-800'} border-b dark:border-gray-700`
+    }>
       <th
         scope="row"
         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
