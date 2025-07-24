@@ -12,6 +12,7 @@ import SourcePage from "./pages/SourcePage";
 // import NotFoundPage from "./pages/NotFoundPage";
 import CalendarPage from "./pages/CalenderPage";
 import NewExpensePage from "./pages/NewExpensePage";
+import DashboardPage from "./pages/DashboardPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,6 +22,7 @@ const router = createBrowserRouter(
       <Route path="/sources" element={<SourcePage />} />
       <Route path="/calender" element={<CalendarPage />} />
       <Route path="/add-expense" element={<NewExpensePage />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
 
       {/* <Route path="*" element={<NotFoundPage />} /> */}
     </Route>

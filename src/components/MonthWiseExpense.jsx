@@ -3,7 +3,7 @@ import { useQuery, gql } from "@apollo/client";
 
 const MonthWiseExpense = (props) => {
   // eslint-disable-next-line react/prop-types
-  const { className, month_type, month_no } = props;
+  const { className, month_no } = props;
   const GET_TOTAL_SPENDS_IN_MON = gql`
   query monExpense {
     total_amount_in_mon(mon_no: ${month_no})
@@ -13,8 +13,8 @@ const MonthWiseExpense = (props) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   return (
-    <div className={className}>
-      <p>
+    <div className={className + " flex flex-col items-center justify-center w-full"}>
+      <p className="text-center w-full">
         Total {getMonthNameFromIndex(month_no)} Spends:&ensp;
         {Math.round(data ? data.total_amount_in_mon ? Math.round(data.total_amount_in_mon) : 0 : 0)}
       </p>
