@@ -1,6 +1,6 @@
 // import React from 'react'
-import Table from "./Table";
 import { useQuery, gql } from "@apollo/client";
+import Table from "./Table";
 
 let headings = [
   "S.No.",
@@ -44,7 +44,7 @@ const GET_EXPENSES = gql`
 
 // eslint-disable-next-line no-unused-vars
 const Expense = () => {
-  const { loading, error, data } = useQuery(GET_EXPENSES);
+  const { loading, error, data, refetch } = useQuery(GET_EXPENSES);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   let expenses = data.expenses.rows.map((row) => {
@@ -58,6 +58,8 @@ const Expense = () => {
       first_name: row.user.first_name,
       is_repayed: row.is_repayed ? "Yes" : "No",
       tag: row.tag ? row.tag : "N/A",
+      source_id: row.source_id,
+      method_id: row.method_id,
     };
   });
   expenses = expenses.map((expense, index) => {
@@ -65,7 +67,7 @@ const Expense = () => {
   })
   return (
     <div>
-      <Table headings={headings} data={expenses} />
+      <Table headings={headings} data={expenses} refetch={refetch} />
     </div>
   );
 };
