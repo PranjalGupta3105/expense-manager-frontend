@@ -3,9 +3,7 @@ import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 
 const Table = (props) => {
-  // eslint-disable-next-line react/prop-types
-  let { headings, data } = props;
-  // data = an array of exenses/methods/source
+  let { headings, data, refetch } = props;
   return (
     <div className="relative overflow-x-auto">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -13,10 +11,8 @@ const Table = (props) => {
           <TableHeader headings={headings} />
         </thead>
         <tbody>
-          {/* eslint-disable-next-line react/prop-types */}
           {data.map((row) =>
-            // eslint-disable-next-line react/jsx-key
-            <TableRow row_data_object={row} />
+            <TableRow row_data_object={row} refetch={refetch} />
           )}
         </tbody>
       </table>
