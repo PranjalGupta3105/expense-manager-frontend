@@ -42,9 +42,27 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
   const [description, setDescription] = useState(expense.description);
   const [tag, setTag] = useState(expense.tag);
   const [isRepayed, setIsRepayed] = useState(expense.is_repayed === 1 || expense.is_repayed === "Yes");
-  const [date, setDate] = useState(expense.date);
-  const [source_id, setSource] = useState(expense.source_id);
-  const [method_id, setMethod] = useState(expense.method_id);
+
+  // Helper to extract id from possible nested object or direct value
+  function getId(val) {
+    if (!val) return "";
+    if (typeof val === "string" || typeof val === "number") return String(val);
+    if (val.id) return String(val.id);
+    if (val.value) return String(val.value);
+    return "";
+  }
+
+  const [method_id, setMethod] = useState(getId(expense.method_id || expense.method));
+  const [source_id, setSource] = useState(getId(expense.source_id || expense.source));
+  // Always use YYYY-MM-DD for input type="date". If missing, use today's date.
+  function getValidDate(val) {
+    if (!val) return moment().format("YYYY-MM-DD");
+    // Try to parse and format
+    const d = moment(val, ["YYYY-MM-DD", "DD-MM-YYYY", moment.ISO_8601], true);
+    if (d.isValid()) return d.format("YYYY-MM-DD");
+    return moment().format("YYYY-MM-DD");
+  }
+  const [date, setDate] = useState(getValidDate(expense.date));
 
   const [updateExpense, { loading, error }] = useMutation(UPDATE_EXPENSE_MUTATION);
 
@@ -83,8 +101,8 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md sm:p-8 p-2 mx-2 overflow-y-auto max-h-screen" onClick={e => e.stopPropagation()}>
         <h2 className="text-xl font-bold mb-4">Edit Expense</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -143,16 +161,16 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="date"
               type="date"
-              value={moment(date).format("YYYY-MM-DD")}
+              value={date}
               onChange={e => setDate(e.target.value)}
               required
             />
           </div>
-          <div className="flex items-center justify-between">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" disabled={loading}>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full sm:w-auto" type="submit" disabled={loading}>
               {loading ? "Updating..." : "Submit"}
             </button>
-            <button type="button" className="ml-4 text-gray-500 hover:text-gray-700" onClick={onClose}>Cancel</button>
+            <button type="button" className="ml-0 sm:ml-4 text-gray-500 hover:text-gray-700 w-full sm:w-auto" onClick={onClose}>Cancel</button>
           </div>
           {error && <p className="text-red-500 mt-2">{error.message}</p>}
         </form>

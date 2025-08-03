@@ -178,7 +178,7 @@ const AddExpense = () => {
             className="block text-gray-700 text-sm font-bold mb-2"
             htmlFor="source_id"
           >
-            Source Id
+            Source
           </label>
           <select
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -207,8 +207,7 @@ const AddExpense = () => {
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="doe"
-            type="text"
-            placeholder="Date of Expense"
+            type="date"
             value={exp_date}
             onChange={(e) => setDate(e.target.value)}
             required

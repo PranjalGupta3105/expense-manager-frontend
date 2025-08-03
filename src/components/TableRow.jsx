@@ -36,15 +36,20 @@ const TableRow = (props) => {
         {
           // eslint-disable-next-line react/prop-types
           keys.slice(1,keys.length).map((key) => {
-            // eslint-disable-next-line react/jsx-key
-            return <td className="px-6 py-4" key={key}>{row_data_object[key]}</td>
+            // For the tag column, render tag and edit icon in separate cells
+            if (key === 'tag') {
+              return [
+                <td className="px-6 py-4" key={key + '-tag'}>{row_data_object[key]}</td>,
+                <td className="px-2 py-2 flex items-center justify-center sm:px-6 sm:py-4" key={key + '-action'}>
+                  <button onClick={() => setShowEdit(true)} className="p-1 sm:p-0">
+                    <PencilSquareIcon className="h-6 w-6 text-blue-500 hover:text-blue-700" />
+                  </button>
+                </td>
+              ];
+            }
+            return <td className="px-6 py-4" key={key}>{row_data_object[key]}</td>;
           })
         }
-        <td className="px-6 py-4">
-          <button onClick={() => setShowEdit(true)}>
-            <PencilSquareIcon className="h-5 w-5 text-blue-500 hover:text-blue-700" />
-          </button>
-        </td>
       </tr>
       {showEdit && (
         <EditExpense expense={row_data_object} onClose={() => setShowEdit(false)} onUpdated={handleUpdated} />
