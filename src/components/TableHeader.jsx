@@ -5,15 +5,12 @@ const TableHeader = (props) => {
   let { headings } = props;
   return (
     <tr>
-      {
-        // eslint-disable-next-line react/prop-types
-        headings.map((heading) => (
-          // eslint-disable-next-line react/jsx-key
-          <th scope="col" className="px-6 py-3">
-            {heading}
-          </th>
-        ))
-      }
+      {headings.map((heading, idx) => (
+        <th scope="col" className="px-6 py-3" key={heading}>
+          {heading}
+        </th>
+      ))}
+      <th scope="col" className="px-6 py-3" key="action">Action</th>
     </tr>
   );
 };
