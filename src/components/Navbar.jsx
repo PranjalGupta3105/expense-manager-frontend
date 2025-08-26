@@ -16,6 +16,7 @@ const navigation = [
   { name: "Calender", href: "/calender" },
   { name: "Add Expense", href: "/add-expense" },
   { name: "Dashboard", href: "/dashboard" },
+  { name: "Card Details", href: "/cards" },
 ];
 
 const GET_TOTAL_SPENDS = gql`
