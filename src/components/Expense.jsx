@@ -24,6 +24,8 @@ const GET_EXPENSES = gql`
         date
         amount
         description
+        source_id
+        method_id
         method {
           name
         }

@@ -47,6 +47,9 @@ const TableRow = (props) => {
                 </td>
               ];
             }
+            if(key === 'source_id' || key === 'method_id') {
+              return null; // Skip rendering these keys
+            }
             return <td className="px-6 py-4" key={key}>{row_data_object[key]}</td>;
           })
         }
