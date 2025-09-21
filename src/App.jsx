@@ -14,6 +14,7 @@ import CalendarPage from "./pages/CalenderPage";
 import NewExpensePage from "./pages/NewExpensePage";
 import DashboardPage from "./pages/DashboardPage";
 import CardDetails from "./components/CardDetail";
+import ExpenseOverview from "./components/ExpenseOverview";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
       <Route path="/add-expense" element={<NewExpensePage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/cards" element={<CardDetails />} />
+      <Route path="/expense-overview" element={<ExpenseOverview />} />
 
       {/* <Route path="*" element={<NotFoundPage />} /> */}
     </Route>
