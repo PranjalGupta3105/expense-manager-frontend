@@ -77,13 +77,14 @@ const Navbar = () => {
                 ))}
               </div>
               {/* White box with total spends */}
-              <div className="hidden sm:flex sm:ml-6 sm:mr-4 bg-white text-black p-4 rounded-md shadow-md w-full max-w-[200px] overflow-hidden text-ellipsis">
+              {/* <div className="hidden sm:flex sm:ml-6 sm:mr-4 bg-white text-black p-4 rounded-md shadow-md w-full max-w-[200px] overflow-hidden text-ellipsis">
                 <p>
                   Total Spends: {data ? data.total_spends ? Math.round(data.total_spends) : 0 : 0}
                 </p>
-              </div>
+              </div> */}
+              
               {/* MonthWiseExpense components */}
-              <MonthWiseExpense
+              {/* <MonthWiseExpense
                 className="hidden sm:flex sm:ml-6 sm:mr-4 bg-white text-black p-4 rounded-md shadow-md w-full max-w-[200px] overflow-hidden text-ellipsis"
                 month_type="current"
                 month_no={new Date().getMonth() + 1}
@@ -92,7 +93,7 @@ const Navbar = () => {
                 className="hidden sm:flex sm:ml-6 sm:mr-4 bg-white text-black p-4 rounded-md shadow-md w-full max-w-[200px] overflow-hidden text-ellipsis"
                 month_type="previous"
                 month_no={new Date().getMonth()}
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -126,7 +127,7 @@ const Navbar = () => {
               ))}
             </div>
             {/* Info boxes - keep inside the blue nav bar */}
-            <div className="flex flex-col space-y-2 mt-4">
+            {/* <div className="flex flex-col space-y-2 mt-4">
               <div className="bg-white text-black p-3 rounded-md shadow-md">
                 <p>
                   Total Spends: {data ? data.total_spends ? Math.round(data.total_spends) : 0 : 0}
@@ -140,7 +141,7 @@ const Navbar = () => {
                 month_type="previous"
                 month_no={new Date().getMonth()}
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </Disclosure>
