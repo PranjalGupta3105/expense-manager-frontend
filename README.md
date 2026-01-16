@@ -63,56 +63,56 @@ cd expense-manager-frontend
 
 2. **Install dependencies**
 
-npm install
-# or
-yarn install
+    npm install
+    # or
+    yarn install
 
 
 3. **Setup environment variables**
 
-Create a .env file in the project root and add:
-
-VITE_GRAPHQL_ENDPOINT=<your_graphql_api_url>
-
+    Create a .env file in the project root and add:
+    VITE_GRAPHQL_ENDPOINT=<your_graphql_api_url>
 
 4. **Run the application**
 
-npm run dev
-# or
-yarn dev
+    npm run dev
+    # or
+    yarn dev
 
 
-The app will start on the port shown in the terminal (usually http://localhost:5173).
+    The app will start on the port shown in the terminal (usually http://localhost:5173).
 
 5. **📁 Project Structure**
-expense-manager-frontend/
-├── public/
-├── src/
-│   ├── components/      # Reusable UI components
-│   ├── graphql/         # GraphQL queries and mutations
-│   ├── pages/           # Page-level components
-│   ├── styles/          # Global styles
-│   ├── App.jsx
-│   └── main.jsx
-├── .gitignore
-├── package.json
-├── tailwind.config.js
-├── vite.config.js
-└── README.md
+
+    expense-manager-frontend/
+    ├── public/
+    ├── src/
+    │   ├── components/      # Reusable UI components
+    │   ├── graphql/         # GraphQL queries and mutations
+    │   ├── pages/           # Page-level components
+    │   ├── styles/          # Global styles
+    │   ├── App.jsx
+    │   └── main.jsx
+    ├── .gitignore
+    ├── package.json
+    ├── tailwind.config.js
+    ├── vite.config.js
+    └── README.md
 
 6. **📌 Available Scripts**
-Command	Description
-npm run dev	Starts the development server
-npm run build	Builds the production bundle
-npm run lint	Runs ESLint checks
-🧪 Recommended Tools
+
+    Command	        Description
+    npm run dev	    Starts the development server
+    npm run build	Builds the production bundle
+    npm run lint	Runs ESLint checks
+7. **🧪 Recommended Tools**
 
     - VS Code – Code editor
     - Apollo Client DevTools – GraphQL debugging
     - Prettier – Code formatting
     - ESLint – Code quality enforcement
 
-7. **🤝 Contributing**
+8. **🤝 Contributing**
 Contributions are welcome!
 
     - Fork the repository
@@ -120,10 +120,10 @@ Contributions are welcome!
     - Commit your changes
     - Open a Pull Request
 
-8. **📄 License**
+9. **📄 License**
 
 This project is licensed under the MIT License.
 
-9. **👤 Author**
+10. **👤 Author**
 Pranjal Gupta
 GitHub: @PranjalGupta3105
