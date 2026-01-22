@@ -14,6 +14,7 @@ let headings = [
   "Created By",
   "Is Repayed",
   "Tag",
+  "Credit Card"
 ];
 
 const GET_EXPENSES = gql`
@@ -38,6 +39,7 @@ const GET_EXPENSES = gql`
           username
         }
         is_repayed
+        card_name
         tag
       }
       count
@@ -81,6 +83,7 @@ const Expense = () => {
       tag: row.tag ? row.tag : "N/A",
       source_id: row.source_id,
       method_id: row.method_id,
+      card_name: row.card_name ? row.card_name : "N/A"
     };
   });
   expenses = expenses.map((expense, index) => {
