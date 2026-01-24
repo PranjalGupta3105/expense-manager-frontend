@@ -73,7 +73,7 @@ const Expense = () => {
   let expenses = data.expenses.rows.map((row) => {
     return {
       id: row.id,
-      data: row.date,
+      data: new Date(Number(row.date)).toISOString().split('T')[0],
       description: row.description,
       amount: row.amount,
       method: row.method.name,
