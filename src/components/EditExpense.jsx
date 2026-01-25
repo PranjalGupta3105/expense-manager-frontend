@@ -1,6 +1,18 @@
-import { gql, useMutation } from "@apollo/client";
-import { useState } from "react";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { useState, useEffect } from "react";
 import moment from "moment";
+
+const GET_CARDS_DATA = gql`
+  query getCCSources {
+    ccSources {
+      id
+      issuing_bank
+      card_name
+      source_id
+      method_id
+    }
+  }
+`;
 
 const UPDATE_EXPENSE_MUTATION = gql`
   mutation updateExpense(
@@ -12,6 +24,7 @@ const UPDATE_EXPENSE_MUTATION = gql`
     $date: String
     $source_id: Int
     $method_id: Int
+    $card_id: Int
   ) {
     updateExpense(
       id: $id
@@ -22,6 +35,7 @@ const UPDATE_EXPENSE_MUTATION = gql`
       date: $date
       source_id: $source_id
       method_id: $method_id
+      card_id: $card_id
     ) {
       id
       amount
@@ -33,6 +47,7 @@ const UPDATE_EXPENSE_MUTATION = gql`
       method_id
       created_by
       updated_by
+      card_id
     }
   }
 `;
@@ -54,6 +69,7 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
 
   const [method_id, setMethod] = useState(getId(expense.method_id || expense.method));
   const [source_id, setSource] = useState(getId(expense.source_id || expense.source));
+  const [card_id, setCardId] = useState(expense.card_id || null);
   // Always use YYYY-MM-DD for input type="date". If missing, use today's date.
   function getValidDate(val) {
     if (!val) return moment().format("YYYY-MM-DD");
@@ -63,6 +79,25 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
     return moment().format("YYYY-MM-DD");
   }
   const [date, setDate] = useState(getValidDate(expense.date));
+
+  const {
+    loading: cardsLoading,
+    error: cardsError,
+    data: cardsData,
+  } = useQuery(GET_CARDS_DATA);
+
+  const handleCardChangeDD = (event) => {
+    const [cardId, sourceId] = event.target.value.split(",");
+    setCardId(cardId);
+    setSource(sourceId);
+  };
+
+  // Clear card_id when method_id changes away from Credit Card (4)
+  useEffect(() => {
+    if (method_id != 4) {
+      setCardId(null);
+    }
+  }, [method_id]);
 
   const [updateExpense, { loading, error }] = useMutation(UPDATE_EXPENSE_MUTATION);
 
@@ -94,6 +129,7 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
         date,
         source_id: parseInt(source_id),
         method_id: parseInt(method_id),
+        card_id: parseInt(card_id) || null,
       },
     });
     if (onUpdated) onUpdated();
@@ -142,18 +178,38 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="source_id">Source</label>
-            <select
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="source_id"
-              value={source_id}
-              onChange={e => setSource(e.target.value)}
-              required
-            >
-              <option value="">Select Source</option>
-              {sourceOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+            {method_id == 4 ? (
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="card_id"
+                value={card_id ? card_id + "," + source_id : ""}
+                onChange={handleCardChangeDD}
+                required
+              >
+                <option value="">Select Card</option>
+                {cardsData && cardsData.ccSources.map((ccoption) => (
+                  <option
+                    key={ccoption.id}
+                    value={ccoption.id + "," + ccoption.source_id}
+                  >
+                    {ccoption.card_name} - {ccoption.issuing_bank}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="source_id"
+                value={source_id}
+                onChange={e => setSource(e.target.value)}
+                required
+              >
+                <option value="">Select Source</option>
+                {sourceOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date">Date</label>
