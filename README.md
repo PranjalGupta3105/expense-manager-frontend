@@ -1,42 +1,55 @@
-# Expense Manager Frontend
+## Expense Manager Frontend
 
-A modern **React-based Expense Management Web Application** that allows users to track daily expenses, manage payment sources, and visualize spending analytics using a **GraphQL-powered backend**.
+**Expense Manager Frontend** is a modern, responsive web application that lets you record, browse, and analyze your day‑to‑day expenses.  
+It is built with **React + Vite**, styled with **Tailwind CSS**, and talks to a **GraphQL** backend via **Apollo Client**.
 
 ---
 
 ## 🚀 Overview
 
-**Expense Manager Frontend** is a client-side application built with **React** and **Vite** that helps users efficiently manage and analyze their expenses.
+The app focuses on fast data entry and at‑a‑glance visibility into where your money goes. It provides:
 
-The application provides an intuitive UI to:
-- Record daily expenses
-- Track payment methods and expense sources
-- Analyze spending behavior with visual insights
-- Communicate with a GraphQL backend for data operations
+- **Expense listing** with sorting-friendly columns (date, amount, method, source, tag, credit card, etc.)
+- **CRUD operations** for expenses (create, edit, soft-delete via GraphQL mutations)
+- **Source & method management** (banks, cards, cash, UPI, and more)
+- **Dashboard & overview pages** for weekly/monthly rollups and trends
+- **Card details view** for tracking credit card spends
+- **Calendar view** to visualize expenses over time
 
----
-
-## 📦 Features
-
-- ✔️ Add and manage daily expenses  
-- ✔️ View active expense sources  
-- ✔️ Track expenses by payment methods  
-- ✔️ Filter and categorize expenses  
-- ✔️ Interactive and responsive UI  
-- ✔️ GraphQL-based API integration  
-- ✔️ Scalable React component architecture  
+The frontend is optimized for both **desktop** and **mobile** screens.
 
 ---
 
-## 🛠️ Technologies Used
+## 📦 Key Features
 
-- **React** – Frontend UI library  
-- **GraphQL** – API communication  
-- **Vite** – Fast build tool and dev server  
-- **Tailwind CSS** – Utility-first styling  
-- **JavaScript (ES6+)** – Application logic  
-- **HTML & CSS** – Structure and layout  
-- **ESLint** – Code linting and consistency  
+- **Expense Management**
+  - Add, edit, and delete expenses
+  - Mark expenses as repaid / pending
+  - Attach metadata like tag, source, method, and card name
+
+- **Rich Listing & Navigation**
+  - Tabular listing for desktop, card-style layout for mobile
+  - Navigation for Expenses, Methods, Sources, Calendar, Dashboard, Card Details, and Expense Overview
+  - Row highlighting based on repayment status
+
+- **Analytics & Insights**
+  - Month-wise / week-wise / day-wise breakdown (in `Dashboard` / `ExpenseOverview`)
+  - Total spends summary in the navbar (via GraphQL)
+
+- **Technical**
+  - Apollo Client for GraphQL queries/mutations
+  - Tailwind CSS utility-first styling
+  - ESLint for consistent code quality
+
+---
+
+## 🛠️ Technologies
+
+- **React + Vite** – SPA architecture and dev tooling  
+- **Apollo Client + GraphQL** – typed data operations and caching  
+- **Tailwind CSS** – styling and layout system  
+- **Heroicons** – modern icon set  
+- **ESLint** – linting and best-practices enforcement  
 
 ---
 
@@ -44,13 +57,9 @@ The application provides an intuitive UI to:
 
 ### Prerequisites
 
-Ensure the following are installed on your system:
-
-- Node.js (v14 or above)
+- Node.js **v16+** (recommended)
 - npm or Yarn
-- A running GraphQL backend service
-
----
+- A running GraphQL backend with the expected schema
 
 ### Installation
 
@@ -63,67 +72,84 @@ cd expense-manager-frontend
 
 2. **Install dependencies**
 
-    npm install
-    # or
-    yarn install
+```bash
+npm install
+# or
+yarn install
+```
 
+3. **Configure environment**
 
-3. **Setup environment variables**
+Create a `.env` file in the project root:
 
-    Create a .env file in the project root and add:
-    VITE_GRAPHQL_ENDPOINT=<your_graphql_api_url>
+```bash
+VITE_GRAPHQL_ENDPOINT=<your_graphql_api_url>
+```
 
 4. **Run the application**
 
-    npm run dev
-    # or
-    yarn dev
+```bash
+npm run dev
+# or
+yarn dev
+```
 
+By default Vite runs on `http://localhost:5173` (check your terminal output).
 
-    The app will start on the port shown in the terminal (usually http://localhost:5173).
+---
 
-5. **📁 Project Structure**
+## 📁 Project Structure (high level)
 
-    expense-manager-frontend/
-    ├── public/
-    ├── src/
-    │   ├── components/      # Reusable UI components
-    │   ├── graphql/         # GraphQL queries and mutations
-    │   ├── pages/           # Page-level components
-    │   ├── styles/          # Global styles
-    │   ├── App.jsx
-    │   └── main.jsx
-    ├── .gitignore
-    ├── package.json
-    ├── tailwind.config.js
-    ├── vite.config.js
-    └── README.md
+```text
+expense-manager-frontend/
+├── public/
+├── src/
+│   ├── components/      # Reusable UI components (tables, forms, dashboards, etc.)
+│   ├── helpers/         # Apollo client and helper utilities
+│   ├── layouts/         # Layout components (e.g. main layout + navbar)
+│   ├── pages/           # Route-level pages (Expenses, Dashboard, Methods, Sources, etc.)
+│   ├── assets/          # Static assets (images, icons)
+│   ├── App.jsx
+│   └── main.jsx
+├── eslint.config.js
+├── package.json
+├── tailwind.config.js
+├── vite.config.js
+└── README.md
+```
 
-6. **📌 Available Scripts**
+---
 
-    Command	        Description
-    npm run dev	    Starts the development server
-    npm run build	Builds the production bundle
-    npm run lint	Runs ESLint checks
-7. **🧪 Recommended Tools**
+## 📌 Available Scripts
 
-    - VS Code – Code editor
-    - Apollo Client DevTools – GraphQL debugging
-    - Prettier – Code formatting
-    - ESLint – Code quality enforcement
+```bash
+npm run dev      # Start the development server
+npm run build    # Create a production build
+npm run lint     # Run ESLint checks
+```
 
-8. **🤝 Contributing**
-Contributions are welcome!
+---
 
-    - Fork the repository
-    - Create a new feature branch
-    - Commit your changes
-    - Open a Pull Request
+## 🤝 Contributing
 
-9. **📄 License**
+Contributions are welcome:
 
-This project is licensed under the MIT License.
+- **Fork** this repository  
+- **Create** a feature branch  
+- **Commit** your changes with clear messages  
+- **Open** a Pull Request describing the change and reasoning  
 
-10. **👤 Author**
-Pranjal Gupta
-GitHub: @PranjalGupta3105
+Issues and feature requests are also appreciated.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 👤 Author
+
+- **Pranjal Gupta**  
+- GitHub: `@PranjalGupta3105`
