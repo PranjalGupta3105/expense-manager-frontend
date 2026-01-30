@@ -353,7 +353,7 @@ const Expense = () => {
                                   : "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200",
                               ].join(" ")}
                             >
-                              {repayed ? "Repaid" : "Pending"}
+                              {repayed ? "Yes" : "N/A"}
                             </span>
                           </td>
                         );
