@@ -30,6 +30,7 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: root
           key: ${{ secrets.KEY }}
+          debug: true
           script: |
             cd /home/ubuntu/expense-manager-frontend
             git pull origin main
