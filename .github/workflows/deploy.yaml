@@ -1,0 +1,41 @@
+name: Deploy Expense Manager Frontend Code
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '16'
+
+      # - name: Install Dependencies
+      #   run: npm install
+
+      # - name: Build Project
+      #   run: npm run build
+
+      - name: Deploy Via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: root
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/expense-manager-frontend
+            git pull origin main
+            pm2 restart frontend-app
+          # remote-user: ${{ secrets.REMOTE_USER }}
+          # server-ip: ${{ secrets.SERVER_IP }}
+          # remote-path: ${{ secrets.REMOTE_PATH }}
+          # local-path: build/
+          # exclude-list: .gitignore
