@@ -34,7 +34,7 @@ jobs:
           script: |
             cd /home/ubuntu/expense-manager-frontend
             git pull origin main
-            pm2 restart frontend-app
+            /home/ubuntu/.nvm/versions/node/v23.2.0/bin/pm2 restart frontend-app
           # remote-user: ${{ secrets.REMOTE_USER }}
           # server-ip: ${{ secrets.SERVER_IP }}
           # remote-path: ${{ secrets.REMOTE_PATH }}
