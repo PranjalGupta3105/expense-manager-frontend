@@ -28,7 +28,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
-          username: root
+          username: ubuntu
           key: ${{ secrets.KEY }}
           debug: true
           script: |
