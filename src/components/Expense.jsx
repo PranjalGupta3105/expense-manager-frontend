@@ -1,8 +1,12 @@
 // import React from 'react'
 import { useQuery, gql, useMutation } from "@apollo/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EditExpense from "./EditExpense";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  PencilSquareIcon,
+  TrashIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 
 // Keep the existing column mapping, but style and render responsively.
 const columnConfig = [
@@ -36,9 +40,25 @@ function formatINR(val) {
   return n.toLocaleString("en-IN");
 }
 
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 const GET_EXPENSES = gql`
-  query getExpenses($fromDate: String, $toDate: String) {
-    expenses(from_date: $fromDate, to_date: $toDate) {
+  query getExpenses($fromDate: String, $toDate: String, $searchText: String) {
+    expenses(
+      search_param: $searchText
+      from_date: $fromDate
+      to_date: $toDate
+    ) {
       rows {
         id
         date
@@ -84,11 +104,20 @@ const DELETE_EXPENSE_MUTATION = gql`
 const Expense = () => {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const debouncedText = useDebounce(searchText, 1000);
   const { loading, error, data, refetch } = useQuery(GET_EXPENSES);
   const [selectedIds, setSelectedIds] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
   const [editingExpense, setEditingExpense] = useState(null);
-  const [deleteExpense, { loading: deleteLoading }] = useMutation(DELETE_EXPENSE_MUTATION);
+  const [deleteExpense, { loading: deleteLoading }] = useMutation(
+    DELETE_EXPENSE_MUTATION,
+  );
+
+  useEffect(() => {
+    if (!debouncedText.trim()) refetch({ searchText: null });
+    else refetch({ searchText: debouncedText });
+  }, [debouncedText]);
 
   if (loading) {
     return (
@@ -200,16 +229,6 @@ const Expense = () => {
       )}
 
       <div className="mb-6 flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-4">
-        {/* Total Expenses */}
-        <div className="flex flex-col w-full sm:w-auto items-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Total Expenses
-          </h1>
-          <span className="mt-1 inline-flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 px-3 py-0.5 text-sm font-semibold text-gray-800 dark:text-gray-100">
-            {expenses.length}
-          </span>
-        </div>
-
         {/* From Date */}
         <div className="flex flex-col w-full sm:w-auto">
           <label className="text-sm font-bold mb-1 text-gray-700">
@@ -256,6 +275,21 @@ const Expense = () => {
         >
           Clear
         </button>
+
+        {/* Search Input with Icon */}
+        <div className="relative w-full sm:w-auto">
+          {/* <label className="text-sm font-bold mb-1 text-gray-700">Search</label> */}
+          <div className="relative">
+            <MagnifyingGlassIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+            <input
+              type="text"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder="Search..."
+              className="border rounded pr-10 pl-3 py-2 w-full sm:w-64"
+            />
+          </div>
+        </div>
 
         {/* Delete Selected */}
         <button
@@ -480,6 +514,15 @@ const Expense = () => {
             </tbody>
           </table>
         </div>
+      </div>
+      {/* Total Expenses */}
+      <div className="flex flex-col w-full sm:w-auto items-center">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Total Expenses
+        </h1>
+        <span className="mt-1 inline-flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 px-3 py-0.5 text-sm font-semibold text-gray-800 dark:text-gray-100">
+          {expenses.length}
+        </span>
       </div>
     </div>
   );
