@@ -12,7 +12,7 @@ import SourcePage from "./pages/SourcePage";
 // import NotFoundPage from "./pages/NotFoundPage";
 import CalendarPage from "./pages/CalenderPage";
 import NewExpensePage from "./pages/NewExpensePage";
-import DashboardPage from "./pages/DashboardPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import CardDetails from "./components/CardDetail";
 import ExpenseOverview from "./components/ExpenseOverview";
 
@@ -24,7 +24,7 @@ const router = createBrowserRouter(
       <Route path="/sources" element={<SourcePage />} />
       <Route path="/calender" element={<CalendarPage />} />
       <Route path="/add-expense" element={<NewExpensePage />} />
-      <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/analytics" element={<AnalyticsPage />} />
       <Route path="/cards" element={<CardDetails />} />
       <Route path="/expense-overview" element={<ExpenseOverview />} />
 

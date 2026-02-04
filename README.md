@@ -12,7 +12,7 @@ The app focuses on fast data entry and at‑a‑glance visibility into where you
 - **Expense listing** with sorting-friendly columns (date, amount, method, source, tag, credit card, etc.)
 - **CRUD operations** for expenses (create, edit, soft-delete via GraphQL mutations)
 - **Source & method management** (banks, cards, cash, UPI, and more)
-- **Dashboard & overview pages** for weekly/monthly rollups and trends
+- **Analytics & overview pages** for weekly/monthly rollups and trends
 - **Card details view** for tracking credit card spends
 - **Calendar view** to visualize expenses over time
 
@@ -29,11 +29,11 @@ The frontend is optimized for both **desktop** and **mobile** screens.
 
 - **Rich Listing & Navigation**
   - Tabular listing for desktop, card-style layout for mobile
-  - Navigation for Expenses, Methods, Sources, Calendar, Dashboard, Card Details, and Expense Overview
+  - Navigation for Expenses, Methods, Sources, Calendar, Analytics, Card Details, and Expense Overview
   - Row highlighting based on repayment status
 
 - **Analytics & Insights**
-  - Month-wise / week-wise / day-wise breakdown (in `Dashboard` / `ExpenseOverview`)
+  - Month-wise / week-wise / day-wise breakdown (in `Analytics` / `ExpenseOverview`)
   - Total spends summary in the navbar (via GraphQL)
 
 - **Technical**
@@ -104,10 +104,10 @@ By default Vite runs on `http://localhost:5173` (check your terminal output).
 expense-manager-frontend/
 ├── public/
 ├── src/
-│   ├── components/      # Reusable UI components (tables, forms, dashboards, etc.)
+│   ├── components/      # Reusable UI components (tables, forms, analytics, etc.)
 │   ├── helpers/         # Apollo client and helper utilities
 │   ├── layouts/         # Layout components (e.g. main layout + navbar)
-│   ├── pages/           # Route-level pages (Expenses, Dashboard, Methods, Sources, etc.)
+│   ├── pages/           # Route-level pages (Expenses, Analytics, Methods, Sources, etc.)
 │   ├── assets/          # Static assets (images, icons)
 │   ├── App.jsx
 │   └── main.jsx

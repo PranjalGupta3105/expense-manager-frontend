@@ -15,7 +15,7 @@ const navigation = [
   { name: "Source", href: "/sources" },
   { name: "Calender", href: "/calender" },
   { name: "Add Expense", href: "/add-expense" },
-  { name: "Dashboard", href: "/dashboard" },
+  { name: "Analytics", href: "/analytics" },
   { name: "Card Details", href: "/cards" },
   { name: "Expense Overview", href: "/expense-overview" },
 ];
