@@ -33,7 +33,10 @@ jobs:
           debug: true
           script: |
             cd /home/ubuntu/expense-manager-frontend
+            git checkout -- src/components/Analytics.jsx
+            git restore src/components/Analytics.jsx
             git pull origin main
+            sed -i 's|http://localhost:8501/|http://'${SERVER_IP}':8501/|g' src/components/Analytics.jsx
             /home/ubuntu/.nvm/versions/node/v23.2.0/bin/pm2 restart frontend-app
           # remote-user: ${{ secrets.REMOTE_USER }}
           # server-ip: ${{ secrets.SERVER_IP }}
