@@ -25,6 +25,8 @@ const columnConfig = [
 
 const headings = columnConfig.map((c) => c.heading);
 
+const pageSize = 100;
+
 function showAt(show) {
   // tailwind breakpoints: base < sm < md < lg < xl
   if (show === "base") return "";
@@ -53,11 +55,19 @@ function useDebounce(value, delay) {
 }
 
 const GET_EXPENSES = gql`
-  query getExpenses($fromDate: String, $toDate: String, $searchText: String) {
+  query getExpenses(
+    $fromDate: String
+    $toDate: String
+    $searchText: String
+    $pageNo: Int
+    $pageSize: Int
+  ) {
     expenses(
       search_param: $searchText
       from_date: $fromDate
       to_date: $toDate
+      page_no: $pageNo
+      page_size: $pageSize
     ) {
       rows {
         id
@@ -110,14 +120,22 @@ const Expense = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
   const [editingExpense, setEditingExpense] = useState(null);
+  const [pageNo, setPageNo] = useState(1);
+  // const [pageSize, setPageSize] = useState(pageSize);
   const [deleteExpense, { loading: deleteLoading }] = useMutation(
     DELETE_EXPENSE_MUTATION,
   );
 
   useEffect(() => {
-    if (!debouncedText.trim()) refetch({ searchText: null });
-    else refetch({ searchText: debouncedText });
-  }, [debouncedText]);
+    if (!debouncedText.trim())
+      refetch({ searchText: null, pageNo: pageNo, pageSize: pageSize });
+    else
+      refetch({
+        searchText: debouncedText,
+        pageNo: pageNo,
+        pageSize: pageSize,
+      });
+  }, [debouncedText, pageNo, pageSize]);
 
   if (loading) {
     return (
@@ -163,6 +181,8 @@ const Expense = () => {
   expenses = expenses.map((expense, index) => {
     return { sno: index + 1, ...expense };
   });
+
+  const totalExpenses = data.expenses.count;
 
   const handleCheckboxChange = (id) => {
     setSelectedIds((prev) =>
@@ -517,12 +537,43 @@ const Expense = () => {
       </div>
       {/* Total Expenses */}
       <div className="flex flex-col w-full sm:w-auto items-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        {/* <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Total Expenses
         </h1>
         <span className="mt-1 inline-flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 px-3 py-0.5 text-sm font-semibold text-gray-800 dark:text-gray-100">
-          {expenses.length}
-        </span>
+          {totalExpenses}
+        </span> */}
+        <div className="my-4 flex items-center justify-between gap-4">
+          <button
+            onClick={() => {
+              if (pageNo > 1) {
+                setPageNo(pageNo - 1);
+                refetch({ pageNo: pageNo - 1, pageSize });
+              }
+            }}
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold disabled:opacity-50"
+            disabled={pageNo === 1}
+          >
+            Previous
+          </button>
+
+          <h1 className="font-semibold">
+            Page {pageNo} of {Math.ceil(totalExpenses / pageSize)}
+          </h1>
+
+          <button
+            onClick={() => {
+              if (pageNo < Math.ceil(totalExpenses / pageSize)) {
+                setPageNo(pageNo + 1);
+                refetch({ pageNo: pageNo + 1, pageSize: pageSize + 20 });
+              }
+            }}
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold disabled:opacity-50"
+            disabled={pageNo === Math.ceil(totalExpenses / pageSize)}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );
