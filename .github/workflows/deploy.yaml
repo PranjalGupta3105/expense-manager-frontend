@@ -31,3 +31,5 @@ jobs:
             EOF
 
             /home/ubuntu/.nvm/versions/node/v23.2.0/bin/pm2 restart frontend-app
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
