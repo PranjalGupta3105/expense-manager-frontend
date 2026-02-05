@@ -13,16 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '16'
-
-      # - name: Install Dependencies
-      #   run: npm install
-
-      # - name: Build Project
-      #   run: npm run build
 
       - name: Deploy Via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -31,15 +21,13 @@ jobs:
           username: ubuntu
           key: ${{ secrets.KEY }}
           debug: true
+          envs: SERVER_IP
           script: |
             cd /home/ubuntu/expense-manager-frontend
-            git checkout -- src/components/Analytics.jsx
-            git restore src/components/Analytics.jsx
             git pull origin main
-            sed -i 's|http://localhost:8501/|http://'${SERVER_IP}':8501/|g' src/components/Analytics.jsx
+
+            cat <<EOF > .env
+            VITE_ANALYTICS_URL=http://${SERVER_IP}:8501/
+            EOF
+
             /home/ubuntu/.nvm/versions/node/v23.2.0/bin/pm2 restart frontend-app
-          # remote-user: ${{ secrets.REMOTE_USER }}
-          # server-ip: ${{ secrets.SERVER_IP }}
-          # remote-path: ${{ secrets.REMOTE_PATH }}
-          # local-path: build/
-          # exclude-list: .gitignore
