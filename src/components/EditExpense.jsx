@@ -73,12 +73,27 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
   // Always use YYYY-MM-DD for input type="date". If missing, use today's date.
   function getValidDate(val) {
     if (!val) return moment().format("YYYY-MM-DD");
-    // Try to parse and format
-    const d = moment(val, ["YYYY-MM-DD", "DD-MM-YYYY", moment.ISO_8601], true);
-    if (d.isValid()) return d.format("YYYY-MM-DD");
+    // Handle numeric or stringified numeric timestamps
+    if (!isNaN(val)) {
+      let num = Number(val);
+      // If it's in seconds (10 digits), convert to ms
+      if (String(num).length === 10) num = num * 1000;
+      const dateStr = moment(num).format("YYYY-MM-DD");
+      return dateStr;
+    }
+    const d = moment(val, ["YYYY-MM-DD", "DD-MM-YYYY", moment.ISO_8601]);
+    if (d.isValid()) {
+      const dateStr = d.format("YYYY-MM-DD");
+      return dateStr;
+    }
     return moment().format("YYYY-MM-DD");
   }
-  const [date, setDate] = useState(getValidDate(expense.date));
+  const [date, setDate] = useState(getValidDate(expense.data));
+
+  // Update date state if expense.data changes
+  useEffect(() => {
+    setDate(getValidDate(expense.data));
+  }, [expense.data]);
 
   const {
     loading: cardsLoading,
