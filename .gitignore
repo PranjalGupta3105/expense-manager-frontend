@@ -29,3 +29,6 @@ generate_pr_context.sh
 
 # PR diff file
 pr-diff.txt
+
+# Ignore .env file containing sensitive information
+.env

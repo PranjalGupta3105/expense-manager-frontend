@@ -3,6 +3,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const Login = () => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -13,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const data = { phone, password };
-      const res = await axios.post("http://localhost:3030/login", data, {
+      const res = await axios.post(`${apiUrl}/login`, data, {
         headers: { "Content-Type": "application/json" },
       });
       if (res && res.data && res.data.token) {
