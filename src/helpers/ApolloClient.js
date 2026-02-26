@@ -1,6 +1,7 @@
 import { ApolloClient, HttpLink, ApolloLink, InMemoryCache, concat  } from '@apollo/client';
+const apiUrl = import.meta.env.VITE_API_URL;
 
-const httpLink = new HttpLink({ uri: 'http://localhost:3030/graph-ql' });
+const httpLink = new HttpLink({ uri: `${apiUrl}/graph-ql` });
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   // Always get the latest token for each request
