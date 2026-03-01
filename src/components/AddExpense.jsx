@@ -1,40 +1,10 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { useState } from "react";
-import moment from "moment";
 
-const AddExpense = () => {
-  const [amount, setAmount] = useState(0.0);
-  const [description, setDescription] = useState("");
-  const [method_id, setMethod] = useState(0);
-  const [source_id, setSource] = useState(0);
-  const [exp_date, setDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
-  const [tag, setTag] = useState("");
-  const [card_id, setCardId] = useState(null);
 
-  const GET_CARDS_DATA = gql`
-    query getCCSources {
-      ccSources {
-        id
-        issuing_bank
-        card_name
-        source_id
-        method_id
-      }
-    }
-  `;
+  import { gql, useMutation, useQuery } from "@apollo/client";
+  import { useState } from "react";
+  import moment from "moment";
 
-  const {
-    loading: cardsLoading,
-    error: cardsError,
-    data: cardsData,
-  } = useQuery(GET_CARDS_DATA);
-
-  const handleCardChangeDD = (event) => {
-    const [cardId, sourceId] = event.target.value.split(",");
-    setCardId(cardId);
-    setSource(sourceId);
-  };
-
+  // GraphQL mutation for adding expense
   const ADD_EXPENSE_MUTATION = gql`
     mutation addExpense(
       $amount: Float!
@@ -44,6 +14,7 @@ const AddExpense = () => {
       $exp_date: String!
       $tag: String
       $card_id: Int
+      $sub_category_id: Int
     ) {
       expense: createExpense(
         amount: $amount
@@ -53,6 +24,7 @@ const AddExpense = () => {
         date: $exp_date
         tag: $tag
         card_id: $card_id
+        sub_category_id: $sub_category_id
       ) {
         id
         amount
@@ -68,15 +40,77 @@ const AddExpense = () => {
         date
         tag
         created_by
-        updated_by,
+        updated_by
         card_id
+        sub_category_id
       }
     }
   `;
 
-  // eslint-disable-next-line no-unused-vars
-  const [createExpense, { data, loading, error }] =
-    useMutation(ADD_EXPENSE_MUTATION);
+  // GraphQL query for categories and subcategories
+  const GET_CATEGORIES = gql`
+    query getAllTransactionCategories {
+      getAllTransactionCategories {
+        id
+        name
+        is_active
+        is_deleted
+        created_by
+        updated_by
+        subCategories {
+          id
+          name
+          category_id
+        }
+      }
+    }
+  `;
+
+
+const AddExpense = () => {
+  // Category and Subcategory state
+  const [categoryId, setCategoryId] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("");
+
+  // Category query
+  const { data: categoriesData, loading: categoriesLoading, error: categoriesError } = useQuery(GET_CATEGORIES);
+
+  // Expense form state
+  const [amount, setAmount] = useState(0.0);
+  const [description, setDescription] = useState("");
+  const [method_id, setMethod] = useState(0);
+  const [source_id, setSource] = useState(0);
+  const [exp_date, setDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+  const [tag, setTag] = useState("");
+  const [card_id, setCardId] = useState(null);
+
+  // Cards query
+  const GET_CARDS_DATA = gql`
+    query getCCSources {
+      ccSources {
+        id
+        issuing_bank
+        card_name
+        source_id
+        method_id
+      }
+    }
+  `;
+  const {
+    loading: cardsLoading,
+    error: cardsError,
+    data: cardsData,
+  } = useQuery(GET_CARDS_DATA);
+
+  // Mutation
+  const [createExpense, { data, loading, error }] = useMutation(ADD_EXPENSE_MUTATION);
+
+  // Handle card dropdown change (must be after setCardId/setSource are defined)
+  const handleCardChangeDD = (event) => {
+    const [cardId, sourceId] = event.target.value.split(",");
+    setCardId(cardId);
+    setSource(sourceId);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission
@@ -92,6 +126,7 @@ const AddExpense = () => {
           exp_date,
           tag,
           card_id: parseInt(card_id) || null,
+          sub_category_id: subCategoryId ? parseInt(subCategoryId) : null,
         },
       });
 
@@ -103,6 +138,7 @@ const AddExpense = () => {
       setDate(moment(new Date()).format("YYYY-MM-DD"));
       setTag("");
       setCardId(null);
+      setSubCategoryId("");
     } catch (err) {
       console.error("Error creating user:", err);
     }
@@ -132,6 +168,7 @@ const AddExpense = () => {
               required
             />
           </div>
+
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -148,6 +185,51 @@ const AddExpense = () => {
               onChange={(e) => setDescription(e.target.value)}
               required
             />
+          </div>
+
+          {/* Category Dropdown */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category_id">
+              Category
+            </label>
+            <select
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="category_id"
+              value={categoryId}
+              onChange={e => {
+                setCategoryId(e.target.value);
+                setSubCategoryId(""); // Reset subcategory when category changes
+              }}
+              required
+              disabled={categoriesLoading || !categoriesData}
+            >
+              <option value="">Select Category</option>
+              {categoriesData && categoriesData.getAllTransactionCategories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+          {/* Subcategory Dropdown */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subcategory_id">
+              Subcategory
+            </label>
+            <select
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="subcategory_id"
+              value={subCategoryId}
+              onChange={e => setSubCategoryId(e.target.value)}
+              required
+              disabled={!categoryId || categoriesLoading || !categoriesData}
+            >
+              <option value="">Select Subcategory</option>
+              {categoriesData && categoryId &&
+                categoriesData.getAllTransactionCategories
+                  .find(cat => String(cat.id) === String(categoryId))?.subCategories
+                  .map(sub => (
+                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                  ))}
+            </select>
           </div>
           {/*
         <div className="mb-4">

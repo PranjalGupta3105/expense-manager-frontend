@@ -1,3 +1,21 @@
+// GraphQL query for categories and subcategories
+const GET_CATEGORIES = gql`
+  query getAllTransactionCategories {
+    getAllTransactionCategories {
+      id
+      name
+      is_active
+      is_deleted
+      created_by
+      updated_by
+      subCategories {
+        id
+        name
+        category_id
+      }
+    }
+  }
+`;
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
 import moment from "moment";
@@ -53,12 +71,7 @@ const UPDATE_EXPENSE_MUTATION = gql`
 `;
 
 const EditExpense = ({ expense, onClose, onUpdated }) => {
-  const [amount, setAmount] = useState(expense.amount);
-  const [description, setDescription] = useState(expense.description);
-  const [tag, setTag] = useState(expense.tag);
-  const [isRepayed, setIsRepayed] = useState(expense.is_repayed === 1 || expense.is_repayed === "Yes");
-
-  // Helper to extract id from possible nested object or direct value
+  // Helper to extract id from possible nested object or direct value (used for initial state)
   function getId(val) {
     if (!val) return "";
     if (typeof val === "string" || typeof val === "number") return String(val);
@@ -67,8 +80,29 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
     return "";
   }
 
-  const [method_id, setMethod] = useState(getId(expense.method_id || expense.method));
-  const [source_id, setSource] = useState(getId(expense.source_id || expense.source));
+  // Category and Subcategory state — initialize from expense when present
+  const [categoryId, setCategoryId] = useState(() => getId(expense.category_id || expense.category));
+  const [subCategoryId, setSubCategoryId] = useState(() => getId(expense.subcategory_id || expense.subcategory));
+
+  // Category query
+  const { data: categoriesData, loading: categoriesLoading, error: categoriesError } = useQuery(GET_CATEGORIES);
+  const [amount, setAmount] = useState(expense.amount);
+  const [description, setDescription] = useState(expense.description);
+  const [tag, setTag] = useState(expense.tag);
+  const [isRepayed, setIsRepayed] = useState(expense.is_repayed === 1 || expense.is_repayed === "Yes");
+
+  // Resolve source_id from expense: use only numeric id, never the display name (expense.source string)
+  const getSourceIdFromExpense = (exp) => {
+    const raw = exp.source_id ?? (exp.source && typeof exp.source === 'object' && exp.source.id != null ? exp.source.id : undefined);
+    return raw != null ? String(raw) : '';
+  };
+  const getMethodIdFromExpense = (exp) => {
+    const raw = exp.method_id ?? (exp.method && typeof exp.method === 'object' && exp.method.id != null ? exp.method.id : undefined);
+    return raw != null ? String(raw) : '';
+  };
+
+  const [method_id, setMethod] = useState(() => getMethodIdFromExpense(expense));
+  const [source_id, setSource] = useState(() => getSourceIdFromExpense(expense));
   const [card_id, setCardId] = useState(expense.card_id || null);
   // Always use YYYY-MM-DD for input type="date". If missing, use today's date.
   function getValidDate(val) {
@@ -94,6 +128,19 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
   useEffect(() => {
     setDate(getValidDate(expense.data));
   }, [expense.data]);
+
+  // Sync category/subcategory when expense prop changes (e.g. editing a different expense)
+  useEffect(() => {
+    setCategoryId(getId(expense.category_id || expense.category));
+    setSubCategoryId(getId(expense.subcategory_id || expense.subcategory));
+  }, [expense.id, expense.category_id, expense.category, expense.subcategory_id, expense.subcategory]);
+
+  // Sync source_id, method_id, card_id when expense prop changes so edit form gets values from listing
+  useEffect(() => {
+    setSource(getSourceIdFromExpense(expense));
+    setMethod(getMethodIdFromExpense(expense));
+    setCardId(expense.card_id ?? null);
+  }, [expense.id, expense.source_id, expense.source, expense.method_id, expense.method, expense.card_id]);
 
   const {
     loading: cardsLoading,
@@ -163,6 +210,51 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">Description</label>
             <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" type="text" value={description} onChange={e => setDescription(e.target.value)} required />
+          </div>
+
+          {/* Category Dropdown */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category_id">
+              Category
+            </label>
+            <select
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="category_id"
+              value={categoryId}
+              onChange={e => {
+                setCategoryId(e.target.value);
+                setSubCategoryId(""); // Reset subcategory when category changes
+              }}
+              required
+              disabled={categoriesLoading || !categoriesData}
+            >
+              <option value="">Select Category</option>
+              {categoriesData && categoriesData.getAllTransactionCategories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+          {/* Subcategory Dropdown */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subcategory_id">
+              Subcategory
+            </label>
+            <select
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="subcategory_id"
+              value={subCategoryId}
+              onChange={e => setSubCategoryId(e.target.value)}
+              required
+              disabled={!categoryId || categoriesLoading || !categoriesData}
+            >
+              <option value="">Select Subcategory</option>
+              {categoriesData && categoryId &&
+                (categoriesData.getAllTransactionCategories
+                  .find(cat => String(cat.id) === String(categoryId))?.subCategories ?? [])
+                  .map(sub => (
+                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                  ))}
+            </select>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tag">Tag</label>
