@@ -77,9 +77,11 @@ const GET_EXPENSES = gql`
         source_id
         method_id
         method {
+          id
           name
         }
         source {
+          id
           name
         }
         user {
@@ -88,6 +90,7 @@ const GET_EXPENSES = gql`
           username
         }
         is_repayed
+        card_id
         card_name
         tag
       }
@@ -163,18 +166,22 @@ const Expense = () => {
     );
   }
   let expenses = data.expenses.rows.map((row) => {
+    const sourceId = row.source_id ?? row.sourceId ?? row.source?.id;
+    const methodId = row.method_id ?? row.methodId ?? row.method?.id;
+    const cardId = row.card_id ?? row.cardId;
     return {
       id: row.id,
       data: new Date(Number(row.date)).toISOString().split("T")[0],
       description: row.description,
       amount: row.amount,
-      method: row.method.name,
-      source: row.source.name,
+      method: row.method?.name,
+      source: row.source?.name,
       first_name: row.user.first_name,
       is_repayed: row.is_repayed ? "Yes" : "No",
       tag: row.tag ? row.tag : "N/A",
-      source_id: row.source_id,
-      method_id: row.method_id,
+      source_id: sourceId != null ? String(sourceId) : undefined,
+      method_id: methodId != null ? String(methodId) : undefined,
+      card_id: cardId != null ? cardId : null,
       card_name: row.card_name ? row.card_name : "N/A",
     };
   });

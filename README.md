@@ -24,6 +24,9 @@ The frontend is optimized for both **desktop** and **mobile** screens.
 
 - **Expense Management**
   - Add, edit, and delete expenses
+  - Category and subcategory selection (Add and Edit)
+  - Method (In-Cash, Debit Card, Credit Card, UPI, AC to AC) and Source; when method is Credit Card, a “Select Card” dropdown is used
+  - Edit form pre-fills from the listing (including source, method, and card) and stays in sync when switching expenses
   - Mark expenses as repaid / pending
   - Attach metadata like tag, source, method, and card name
 
@@ -40,6 +43,29 @@ The frontend is optimized for both **desktop** and **mobile** screens.
   - Apollo Client for GraphQL queries/mutations
   - Tailwind CSS utility-first styling
   - ESLint for consistent code quality
+
+---
+
+## 📝 Add & Edit Expense Components
+
+### Add Expense (`AddExpense.jsx`)
+
+- **Form fields:** Amount, Description, Category, Subcategory, Method, Source, Date, Tag.
+- **Category & subcategory:** Loaded from `getAllTransactionCategories`; subcategory options depend on the selected category and reset when category changes.
+- **Method:** In-Cash, Debit Card, Credit Card, UPI, AC to AC.
+- **Source:**
+  - When **Credit Card** is selected, the Source field shows a **Select Card** dropdown (from `ccSources`), which sets both card and source.
+  - Otherwise, a bank/source dropdown is shown (KOTAK, ICICI, SBI, HSBC, HDFC, CASH).
+- **Submission:** Uses `createExpense` mutation with `amount`, `description`, `method_id`, `source_id`, `exp_date`, `tag`, optional `card_id`, and optional `sub_category_id`. Form resets after success.
+
+### Edit Expense (`EditExpense.jsx`)
+
+- **Usage:** Opened from the expense listing (e.g. edit icon on a row). Receives `expense`, `onClose`, and `onUpdated` as props. Renders as a modal overlay.
+- **Pre-filled data:** All fields are initialized from the passed `expense` object (amount, description, tag, date, category, subcategory, method, source, card when applicable, is repayed). Values stay in sync when the `expense` prop changes (e.g. opening a different expense).
+- **Source & method:** Resolved from the listing using `source_id` and `method_id`, with fallbacks for `source.id` / `method.id` when the API returns nested objects. Display names (e.g. bank name string) are never used as dropdown values so the correct option is selected.
+- **Credit Card:** When method is Credit Card, the Source field shows the **Select Card** dropdown. The current card is shown when the listing provides `card_id` (and `source_id`) in the expense; the expenses query must include `card_id` in the response for this to work.
+- **Category / subcategory:** Initialized and synced from `expense.category_id` / `expense.subcategory_id` (or nested `category` / `subcategory`). Subcategory list is derived from the selected category with safe handling when `subCategories` is missing.
+- **Submission:** Uses `updateExpense` mutation with `id`, `amount`, `description`, `tag`, `is_repayed`, `date`, `source_id`, `method_id`, and optional `card_id`. Calls `onUpdated()` and `onClose()` on success.
 
 ---
 
