@@ -17,6 +17,8 @@ const columnConfig = [
   { key: "amount", heading: "Amount", show: "base" },
   { key: "method", heading: "Method", show: "lg" },
   { key: "source", heading: "Source", show: "xl" },
+  { key: "category_name", heading: "Category", show: "xl" },
+  { key: "sub_category_name", heading: "Subcategory", show: "xl" },
   { key: "first_name", heading: "Created By", show: "xl" },
   { key: "is_repayed", heading: "Is Repayed", show: "lg" },
   { key: "tag", heading: "Tag", show: "xl" },
@@ -93,6 +95,8 @@ const GET_EXPENSES = gql`
         card_id
         card_name
         tag
+        sub_category_name
+        category_name
       }
       count
     }
@@ -176,6 +180,8 @@ const Expense = () => {
       amount: row.amount,
       method: row.method?.name,
       source: row.source?.name,
+      category_name: row.category_name ?? "Category not found",
+      sub_category_name: row.sub_category_name ?? "N/A",
       first_name: row.user.first_name,
       is_repayed: row.is_repayed ? "Yes" : "No",
       tag: row.tag ? row.tag : "N/A",
@@ -364,6 +370,17 @@ const Expense = () => {
                         >
                           {expense.description}
                         </p>
+                        {/* Category / Subcategory badge */}
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                          <div className="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 dark:border-indigo-700/60 dark:bg-indigo-900/40">
+                            <span className="text-[10px] font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-200">
+                              {expense.category_name}
+                            </span>
+                            <span className="ml-2 inline-flex items-center rounded-full bg-white px-2 py-0.5 text-[10px] font-medium text-indigo-700 shadow-sm dark:bg-indigo-800 dark:text-indigo-100">
+                              {expense.sub_category_name}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                       <button
                         onClick={() => setEditingExpense(expense)}
