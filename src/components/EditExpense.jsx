@@ -43,6 +43,7 @@ const UPDATE_EXPENSE_MUTATION = gql`
     $source_id: Int
     $method_id: Int
     $card_id: Int
+    $sub_category_id: Int
   ) {
     updateExpense(
       id: $id
@@ -54,6 +55,7 @@ const UPDATE_EXPENSE_MUTATION = gql`
       source_id: $source_id
       method_id: $method_id
       card_id: $card_id
+      sub_category_id: $sub_category_id
     ) {
       id
       amount
@@ -66,6 +68,7 @@ const UPDATE_EXPENSE_MUTATION = gql`
       created_by
       updated_by
       card_id
+      sub_category_id
     }
   }
 `;
@@ -192,6 +195,7 @@ const EditExpense = ({ expense, onClose, onUpdated }) => {
         source_id: parseInt(source_id),
         method_id: parseInt(method_id),
         card_id: parseInt(card_id) || null,
+        sub_category_id: subCategoryId ? parseInt(subCategoryId) : null,
       },
     });
     if (onUpdated) onUpdated();
