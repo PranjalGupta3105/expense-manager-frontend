@@ -9,8 +9,8 @@ function convertToINR(amount) {
 }
 
 const QUERY_EXPENSE_MONTH = gql`
-  query expensePerMonInCurYear($tag_value: String) {
-    expensePerMonInCurYear(tag_value: $tag_value) {
+  query expensePerMonInCurYear($tag_value: String, $transactions_year: Int) {
+    expensePerMonInCurYear(tag_value: $tag_value, transactions_year: $transactions_year) {
       transactions_count
       total_amount
       month_name
@@ -19,8 +19,8 @@ const QUERY_EXPENSE_MONTH = gql`
 `;
 
 const QUERY_EXPENSE_DAY = gql`
-  query expenseEachDayInCurWeek($tag_value: String) {
-    expenseEachDayInCurWeek(tag_value: $tag_value) {
+  query expenseEachDayInCurWeek($tag_value: String, $transactions_year: Int) {
+    expenseEachDayInCurWeek(tag_value: $tag_value, transactions_year: $transactions_year) {
       transactions_count
       amount
       date
@@ -30,8 +30,8 @@ const QUERY_EXPENSE_DAY = gql`
 `;
 
 const QUERY_EXPENSE_WEEK = gql`
-  query expensePerWeekInCurMon($tag_value: String) {
-    expensePerWeekInCurMon(tag_value: $tag_value) {
+  query expensePerWeekInCurMon($tag_value: String, $transactions_year: Int) {
+    expensePerWeekInCurMon(tag_value: $tag_value, transactions_year: $transactions_year) {
       transactions_count
       total_amount
       week_start
@@ -41,6 +41,8 @@ const QUERY_EXPENSE_WEEK = gql`
 `;
 
 const ExpenseOverview = () => {
+  const currentYear = new Date().getFullYear();
+  const [year, setYear] = useState(currentYear);
   const [searchDay, setSearchDay] = useState("");
   const [searchWeek, setSearchWeek] = useState("");
   const [searchMonth, setSearchMonth] = useState("");
@@ -51,7 +53,7 @@ const ExpenseOverview = () => {
     data: dataMonth,
     refetch: refetchMonth,
   } = useQuery(QUERY_EXPENSE_MONTH, {
-    variables: { tag_value: searchMonth || null },
+    variables: { tag_value: searchMonth || null, transactions_year: year },
   });
   const {
     loading: loadingDay,
@@ -59,7 +61,7 @@ const ExpenseOverview = () => {
     data: dataDay,
     refetch: refetchDay,
   } = useQuery(QUERY_EXPENSE_DAY, {
-    variables: { tag_value: searchDay || null },
+    variables: { tag_value: searchDay || null, transactions_year: year },
   });
   const {
     loading: loadingWeek,
@@ -67,7 +69,7 @@ const ExpenseOverview = () => {
     data: dataWeek,
     refetch: refetchWeek,
   } = useQuery(QUERY_EXPENSE_WEEK, {
-    variables: { tag_value: searchWeek || null },
+    variables: { tag_value: searchWeek || null, transactions_year: year },
   });
 
   const monthHeadings = [
@@ -99,20 +101,44 @@ const ExpenseOverview = () => {
         <h3 className="text-xl font-bold mb-4">
           Expense Each Day In Current Week
         </h3>
-        <div className="mb-2 flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search by tag..."
-            value={searchDay}
-            onChange={(e) => setSearchDay(e.target.value)}
-            className="border rounded px-3 py-1 w-64"
-          />
-          <button
-            className="bg-blue-500 text-white px-3 py-1 rounded"
-            onClick={() => refetchDay({ tag_value: searchDay || null })}
-          >
-            Search
-          </button>
+        <div className="mb-2 flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Search by tag..."
+              value={searchDay}
+              onChange={(e) => setSearchDay(e.target.value)}
+              className="border rounded px-3 py-1 w-40 sm:w-64"
+            />
+            <button
+              className="bg-blue-500 text-white px-3 py-1 rounded"
+              onClick={() =>
+                refetchDay({
+                  tag_value: searchDay || null,
+                  transactions_year: year,
+                })
+              }
+            >
+              Search
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">Year:</span>
+            <select
+              value={year}
+              onChange={(e) => setYear(parseInt(e.target.value, 10))}
+              className="border rounded px-2 py-1 text-sm"
+            >
+              {Array.from({ length: 2050 - 2024 + 1 }).map((_, idx) => {
+                const y = 2024 + idx;
+                return (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full border rounded-lg">
@@ -175,20 +201,44 @@ const ExpenseOverview = () => {
         <h3 className="text-xl font-bold mb-4">
           Expense Per Week In Current Month
         </h3>
-        <div className="mb-2 flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search by tag..."
-            value={searchWeek}
-            onChange={(e) => setSearchWeek(e.target.value)}
-            className="border rounded px-3 py-1 w-64"
-          />
-          <button
-            className="bg-blue-500 text-white px-3 py-1 rounded"
-            onClick={() => refetchWeek({ tag_value: searchWeek || null })}
-          >
-            Search
-          </button>
+        <div className="mb-2 flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Search by tag..."
+              value={searchWeek}
+              onChange={(e) => setSearchWeek(e.target.value)}
+              className="border rounded px-3 py-1 w-40 sm:w-64"
+            />
+            <button
+              className="bg-blue-500 text-white px-3 py-1 rounded"
+              onClick={() =>
+                refetchWeek({
+                  tag_value: searchWeek || null,
+                  transactions_year: year,
+                })
+              }
+            >
+              Search
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">Year:</span>
+            <select
+              value={year}
+              onChange={(e) => setYear(parseInt(e.target.value, 10))}
+              className="border rounded px-2 py-1 text-sm"
+            >
+              {Array.from({ length: 2050 - 2024 + 1 }).map((_, idx) => {
+                const y = 2024 + idx;
+                return (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full border rounded-lg">
@@ -254,20 +304,44 @@ const ExpenseOverview = () => {
         <h3 className="text-xl font-bold mb-4">
           Expense Per Month In Current Year
         </h3>
-        <div className="mb-2 flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search by tag..."
-            value={searchMonth}
-            onChange={(e) => setSearchMonth(e.target.value)}
-            className="border rounded px-3 py-1 w-64"
-          />
-          <button
-            className="bg-blue-500 text-white px-3 py-1 rounded"
-            onClick={() => refetchMonth({ tag_value: searchMonth || null })}
-          >
-            Search
-          </button>
+        <div className="mb-2 flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Search by tag..."
+              value={searchMonth}
+              onChange={(e) => setSearchMonth(e.target.value)}
+              className="border rounded px-3 py-1 w-40 sm:w-64"
+            />
+            <button
+              className="bg-blue-500 text-white px-3 py-1 rounded"
+              onClick={() =>
+                refetchMonth({
+                  tag_value: searchMonth || null,
+                  transactions_year: year,
+                })
+              }
+            >
+              Search
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600">Year:</span>
+            <select
+              value={year}
+              onChange={(e) => setYear(parseInt(e.target.value, 10))}
+              className="border rounded px-2 py-1 text-sm"
+            >
+              {Array.from({ length: 2050 - 2024 + 1 }).map((_, idx) => {
+                const y = 2024 + idx;
+                return (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full border rounded-lg">
