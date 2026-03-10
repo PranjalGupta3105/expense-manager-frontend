@@ -28,6 +28,7 @@ jobs:
 
             cat <<EOF > .env
             VITE_ANALYTICS_URL=http://${SERVER_IP}:8501/
+            VITE_API_URL=http://${SERVER_IP}:3001
             EOF
 
             /home/ubuntu/.nvm/versions/node/v23.2.0/bin/pm2 restart frontend-app
