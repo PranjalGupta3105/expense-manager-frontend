@@ -1,7 +1,7 @@
 import React from "react";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -19,6 +19,7 @@ const navigation = [
 
 const Navbar = () => {
   const [sideNavOpen, setSideNavOpen] = React.useState(false);
+  const location = useLocation();
 
   const clearUserToken = () => {
     localStorage.removeItem("token");
@@ -27,18 +28,18 @@ const Navbar = () => {
 
   return (
     <div>
-      {/* Overlay for side nav on mobile */}
+      {/* Overlay for side nav on mobile (up to md breakpoint) */}
       {sideNavOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-40 sm:hidden"
+          className="fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden"
           onClick={() => setSideNavOpen(false)}
         />
       )}
       <Disclosure as="nav" className="bg-gray-800">
-        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-          <div className="relative flex items-center justify-between h-16">
-            {/* Mobile menu button */}
-            <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+        <div className="w-full px-2 sm:px-4 lg:px-6 overflow-x-auto">
+          <div className="relative flex items-center justify-between h-16 min-w-max">
+            {/* Mobile menu button (visible below md where cards layout is used) */}
+            <div className="absolute inset-y-0 left-0 flex items-center md:hidden">
               <button
                 className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                 onClick={() => setSideNavOpen(true)}
@@ -48,24 +49,32 @@ const Navbar = () => {
                 <XMarkIcon aria-hidden="true" className={sideNavOpen ? "block h-6 w-6" : "hidden h-6 w-6"} />
               </button>
             </div>
-            {/* Navbar menu items */}
+            {/* Navbar menu items (desktop: md and above) */}
             <div className="flex items-center justify-center space-x-4 flex-1">
-              <div className="hidden sm:flex space-x-4">
-                {navigation.map((item) => (
-                  <Link to={item.href} key={item.name}>
-                    <button
-                      aria-current={item.current ? "page" : undefined}
-                      className={classNames(
-                        item.current
-                          ? "bg-gray-900 text-white"
-                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "rounded-md text-lg px-6 py-4 font-medium flex items-center justify-center"
-                      )}
-                    >
-                      {item.name}
-                    </button>
-                  </Link>
-                ))}
+              <div className="hidden md:flex space-x-4">
+                {navigation.map((item) => {
+                  const isRoot = item.href === "/";
+                  const isCurrent = isRoot
+                    ? location.pathname === "/"
+                    : location.pathname === item.href ||
+                      location.pathname.startsWith(item.href + "/") ||
+                      location.pathname.endsWith(item.href);
+                  return (
+                    <Link to={item.href} key={item.name}>
+                      <button
+                        aria-current={isCurrent ? "page" : undefined}
+                        className={classNames(
+                          isCurrent
+                            ? "bg-gray-900 text-white"
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                          "rounded-md text-lg px-6 py-4 font-medium flex items-center justify-center"
+                        )}
+                      >
+                        {item.name}
+                      </button>
+                    </Link>
+                  );
+                })}
               </div>
               {/* White box with total spends */}
               {/* <div className="hidden sm:flex sm:ml-6 sm:mr-4 bg-white text-black p-4 rounded-md shadow-md w-full max-w-[200px] overflow-hidden text-ellipsis">
@@ -85,7 +94,7 @@ const Navbar = () => {
                 month_type="previous"
                 month_no={new Date().getMonth()}
               /> */}
-              <div className="bg-white text-black p-3 rounded-md shadow-md hidden sm:flex">
+              <div className="bg-white text-black p-3 rounded-md shadow-md hidden md:flex">
               <button onClick={clearUserToken} className="text-red-500 hover:text-red-700">
                 Logout
               </button>
@@ -93,9 +102,9 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        {/* Mobile Side Nav */}
+        {/* Mobile Side Nav (below md) */}
         <div
-          className={`fixed top-0 left-0 h-full w-64 bg-gray-800 z-50 transform ${sideNavOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 sm:hidden flex flex-col`}
+          className={`fixed top-0 left-0 h-full w-64 bg-gray-800 z-50 transform ${sideNavOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 md:hidden flex flex-col`}
         >
           <div className="flex flex-col h-full p-4 space-y-4 overflow-y-auto">
             <button
@@ -106,21 +115,33 @@ const Navbar = () => {
             </button>
             {/* Navigation links */}
             <div className="flex flex-col space-y-2">
-              {navigation.map((item) => (
-                <Link to={item.href} key={item.name} onClick={() => setSideNavOpen(false)}>
-                  <button
-                    aria-current={item.current ? "page" : undefined}
-                    className={classNames(
-                      item.current
-                        ? "bg-gray-700 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                      "rounded-md text-lg px-4 py-3 font-medium w-full text-left"
-                    )}
+              {navigation.map((item) => {
+                const isRoot = item.href === "/";
+                const isCurrent = isRoot
+                  ? location.pathname === "/"
+                  : location.pathname === item.href ||
+                    location.pathname.startsWith(item.href + "/") ||
+                    location.pathname.endsWith(item.href);
+                return (
+                  <Link
+                    to={item.href}
+                    key={item.name}
+                    onClick={() => setSideNavOpen(false)}
                   >
-                    {item.name}
-                  </button>
-                </Link>
-              ))}
+                    <button
+                      aria-current={isCurrent ? "page" : undefined}
+                      className={classNames(
+                        isCurrent
+                          ? "bg-gray-700 text-white"
+                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                        "rounded-md text-lg px-4 py-3 font-medium w-full text-left"
+                      )}
+                    >
+                      {item.name}
+                    </button>
+                  </Link>
+                );
+              })}
             </div>
             {/* Info boxes - keep inside the blue nav bar */}
             {/* <div className="flex flex-col space-y-2 mt-4">
@@ -138,7 +159,7 @@ const Navbar = () => {
                 month_no={new Date().getMonth()}
               />
             </div> */}
-             <div className="bg-white text-black p-3 rounded-md shadow-md flex sm:hidden">
+             <div className="bg-white text-black p-3 rounded-md shadow-md flex md:hidden">
               <button onClick={clearUserToken} className="text-red-500 hover:text-red-700">
                 Logout
               </button>
