@@ -30,11 +30,8 @@ const headings = columnConfig.map((c) => c.heading);
 const pageSize = 100;
 
 function showAt(show) {
-  // tailwind breakpoints: base < sm < md < lg < xl
-  if (show === "base") return "";
-  if (show === "md") return "hidden md:table-cell";
-  if (show === "lg") return "hidden lg:table-cell";
-  if (show === "xl") return "hidden xl:table-cell";
+  // For the desktop table we always show all columns;
+  // responsivity is handled via horizontal scrolling, not hiding.
   return "";
 }
 
@@ -438,7 +435,7 @@ const Expense = () => {
       {/* Desktop: table */}
       <div className="hidden md:block rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+          <table className="min-w-max w-full table-auto text-sm">
             <thead className="bg-gray-50 dark:bg-gray-700/60">
               <tr className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-300">
                 <th className="px-4 py-3 text-left">
@@ -537,7 +534,7 @@ const Expense = () => {
                       return (
                         <td
                           key={c.key}
-                          className={`px-4 py-3 text-gray-700 dark:text-gray-200 whitespace-nowrap ${showAt(c.show)}`}
+                          className={`px-4 py-3 text-gray-700 dark:text-gray-200 ${showAt(c.show)}`}
                         >
                           {v}
                         </td>
